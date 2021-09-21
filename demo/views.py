@@ -1,12 +1,25 @@
+from django.db.models.query import QuerySet
 from demo.models import Task
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 from .models import Task
 from .serializers import TaskSerializer
 
 # Create your views here.
+class MyPageNumberPagination(PageNumberPagination):
+    page_size = 5
+    page_query_param = 'p'
+    page_size_query_param = 'records'
+    max_page_size = 7
+
+class tasklist(ListAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    pagination_class = MyPageNumberPagination
 
 @api_view(['GET'])
 def apiOverView(request):
